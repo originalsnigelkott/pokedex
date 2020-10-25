@@ -1,6 +1,7 @@
 package pokedex.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,5 +33,11 @@ public class PokemonController {
     @GetMapping("/{id}")
     public ResponseEntity<Pokemon> findById(@PathVariable String id) {
         return ResponseEntity.ok(pokemonService.getPokemonById(id));
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(@PathVariable String id, @RequestBody Pokemon pokemon) {
+        pokemonService.update(id, pokemon);
     }
 }
