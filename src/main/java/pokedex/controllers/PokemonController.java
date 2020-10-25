@@ -1,24 +1,27 @@
 package pokedex.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pokedex.entities.Pokemon;
+import pokedex.services.PokemonService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/pokemon")
 public class PokemonController {
-    private List<Pokemon> dummyData = List.of(new Pokemon(1, "Bulbasaur"), new Pokemon(2, "Charmander"), new Pokemon(3, "Charmelion"));
+    @Autowired
+    private PokemonService pokemonService;
 
     @GetMapping
     public ResponseEntity<List<Pokemon>> find(@RequestParam String name) {
-        return ResponseEntity.ok(dummyData.stream().filter(x -> x.getName().toLowerCase().contains(name.toLowerCase())).collect(Collectors.toList()));
+        var pokemon = pokemonService.getPokemonByName(name);
+        return ResponseEntity.ok(pokemon);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Pokemon> findById(@PathVariable int id) {
-        return ResponseEntity.ok(dummyData.stream().filter(x -> x.getId() == id).findFirst().get());
+    public ResponseEntity<Pokemon> findById(@PathVariable String id) {
+        return ResponseEntity.ok(pokemonService.getPokemonById(id));
     }
 }
