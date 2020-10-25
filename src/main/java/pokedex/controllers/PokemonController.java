@@ -40,4 +40,10 @@ public class PokemonController {
     public void update(@PathVariable String id, @RequestBody Pokemon pokemon) {
         pokemonService.update(id, pokemon);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable String id) {
+        pokemonService.delete(id);
+    }
 }
