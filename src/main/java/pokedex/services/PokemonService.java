@@ -1,9 +1,7 @@
 package pokedex.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import pokedex.entities.PokeApiResource;
 import pokedex.entities.Pokemon;
 import pokedex.exceptions.EntityNotFoundException;
@@ -44,13 +42,13 @@ public class PokemonService {
     }
 
     public void update(String id, Pokemon pokemon) {
-        checkExistanceById(id);
+        checkExistenceById(id);
         pokemon.setId(id);
         save(pokemon);
     }
 
     public void delete(String id) {
-        checkExistanceById(id);
+        checkExistenceById(id);
         pokemonRepository.deleteById(id);
     }
 
@@ -58,8 +56,8 @@ public class PokemonService {
         return pokemonRepository.save(pokemon);
     }
 
-    private void checkExistanceById(String id) {
-        if(!pokemonRepository.existsById(id)) {
+    private void checkExistenceById(String id) {
+        if (!pokemonRepository.existsById(id)) {
             throw new EntityNotFoundException("pokemon", "id");
         }
     }
