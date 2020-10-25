@@ -23,13 +23,15 @@ public class PokemonService {
     PokeApiResourceRepository pokemonResourceRepository;
 
     public List<Pokemon> getPokemonByName(String name) {
-        var pokemon = pokemonRepository.findByName(name);
-        System.out.println();
-        var potentialPokemon = getAllPokemonNameMatches(name);
-        if (pokemon.size() < potentialPokemon.size() || pokemon.size() == 0) {
-            pokemon.addAll(getMissingPokemon(pokemon, potentialPokemon));
+        if (name != null) {
+            var pokemon = pokemonRepository.findByName(name);
+            var potentialPokemon = getAllPokemonNameMatches(name);
+            if (pokemon.size() < potentialPokemon.size() || pokemon.size() == 0) {
+                pokemon.addAll(getMissingPokemon(pokemon, potentialPokemon));
+            }
+            return pokemon;
         }
-        return pokemon;
+        return pokemonRepository.findAllByOrderByNumberAsc();
     }
 
     public Pokemon getPokemonById(String id) {
