@@ -44,16 +44,24 @@ public class PokemonService {
     }
 
     public void update(String id, Pokemon pokemon) {
-        if(!pokemonRepository.existsById(id)) {
-            throw new EntityNotFoundException("pokemon", "id");
-        }
+        checkExistanceById(id);
         pokemon.setId(id);
         save(pokemon);
+    }
 
+    public void delete(String id) {
+        checkExistanceById(id);
+        pokemonRepository.deleteById(id);
     }
 
     private Pokemon save(Pokemon pokemon) {
         return pokemonRepository.save(pokemon);
+    }
+
+    private void checkExistanceById(String id) {
+        if(!pokemonRepository.existsById(id)) {
+            throw new EntityNotFoundException("pokemon", "id");
+        }
     }
 
     private List<PokeApiResource> getAllPokemonNameMatches(String name) {
