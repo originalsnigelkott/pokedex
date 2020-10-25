@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pokedex.entities.PokeApiResource;
 import pokedex.entities.Pokemon;
+import pokedex.exceptions.EntityNotFoundException;
 import pokedex.repositories.PokeApiResourceRepository;
 import pokedex.repositories.PokemonRepository;
 
@@ -23,7 +24,7 @@ public class PokemonService {
     PokeApiResourceRepository pokemonResourceRepository;
 
     public Pokemon create(Pokemon pokemon) {
-        return pokemonRepository.save(pokemon);
+        return save(pokemon);
     }
 
     public List<Pokemon> getPokemonByName(String name) {
@@ -39,7 +40,20 @@ public class PokemonService {
     }
 
     public Pokemon getPokemonById(String id) {
-        return pokemonRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a pokemon!"));
+        return pokemonRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("pokemon", "id"));
+    }
+
+    public void update(String id, Pokemon pokemon) {
+        if(!pokemonRepository.existsById(id)) {
+            throw new EntityNotFoundException("pokemon", "id");
+        }
+        pokemon.setId(id);
+        save(pokemon);
+
+    }
+
+    private Pokemon save(Pokemon pokemon) {
+        return pokemonRepository.save(pokemon);
     }
 
     private List<PokeApiResource> getAllPokemonNameMatches(String name) {
