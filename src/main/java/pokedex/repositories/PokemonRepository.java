@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface PokemonRepository extends MongoRepository<Pokemon, String> {
-    @Query("{ 'name' : { $regex: ?0 } }")
+    @Query("{ 'name' : { $regex: ?0, $options: 'i' } }")
     List<Pokemon> findByName(String name);
 }
