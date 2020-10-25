@@ -11,4 +11,5 @@ import java.util.List;
 public interface PokemonRepository extends MongoRepository<Pokemon, String> {
     @Query("{ 'name' : { $regex: ?0, $options: 'i' } }")
     List<Pokemon> findByName(String name);
+    List<Pokemon> findAllByOrderByNumberAsc();
 }
