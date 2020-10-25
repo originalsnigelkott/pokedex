@@ -22,6 +22,10 @@ public class PokemonService {
     @Autowired
     PokeApiResourceRepository pokemonResourceRepository;
 
+    public Pokemon create(Pokemon pokemon) {
+        return pokemonRepository.save(pokemon);
+    }
+
     public List<Pokemon> getPokemonByName(String name) {
         if (name != null) {
             var pokemon = pokemonRepository.findByName(name);

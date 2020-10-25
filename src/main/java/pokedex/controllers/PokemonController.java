@@ -1,11 +1,13 @@
 package pokedex.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pokedex.entities.Pokemon;
 import pokedex.services.PokemonService;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -13,6 +15,13 @@ import java.util.List;
 public class PokemonController {
     @Autowired
     private PokemonService pokemonService;
+
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Pokemon> create(@RequestBody Pokemon pokemon) {
+        var createdPokemon = pokemonService.create(pokemon);
+        var uri = URI.create("/api/v1/pokemon" + createdPokemon.getId());
+        return ResponseEntity.created(uri).body(createdPokemon);
+    }
 
     @GetMapping
     public ResponseEntity<List<Pokemon>> find(@RequestParam(required = false) String name) {
