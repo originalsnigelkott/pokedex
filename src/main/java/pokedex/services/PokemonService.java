@@ -1,6 +1,9 @@
 package pokedex.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import pokedex.entities.PokeApiResource;
 import pokedex.entities.Pokemon;
@@ -10,6 +13,7 @@ import pokedex.repositories.PokemonRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,19 +24,23 @@ public class PokemonService {
     private PokemonRepository pokemonRepository;
     @Autowired
     PokeApiResourceRepository pokemonResourceRepository;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     public Pokemon create(Pokemon pokemon) {
         return save(pokemon);
     }
 
-    public List<Pokemon> getPokemonByName(String name) {
-        if (name != null) {
+    public List<Pokemon> getPokemon(String name, Integer minWeight, Integer maxWeight) {
+        if (name != null ) {
             var pokemon = pokemonRepository.findByName(name);
             var potentialPokemon = getAllPokemonNameMatches(name);
             if (pokemon.size() < potentialPokemon.size() || pokemon.isEmpty()) {
-                pokemon.addAll(getMissingPokemon(pokemon, potentialPokemon));
+               getMissingPokemon(pokemon, potentialPokemon);
             }
-            return pokemon;
+        }
+        if (name != null || minWeight != null || maxWeight != null) {
+            return getPokemonByProperties(name, minWeight, maxWeight);
         }
         return pokemonRepository.findAllByOrderByNumberAsc();
     }
@@ -83,5 +91,20 @@ public class PokemonService {
             }
         });
         return pokemonRepository.saveAll(pokemonConsumerService.getManyPokemonByName(pokemonToFetch));
+    }
+
+    private List<Pokemon> getPokemonByProperties(String name, Integer minWeight, Integer maxWeight) {
+        var query = new Query();
+        if(name != null && !name.isEmpty()) {
+            var pattern = Pattern.compile(name, Pattern.CASE_INSENSITIVE);
+            query.addCriteria(Criteria.where("name").regex(pattern));
+        }
+        if(minWeight != null) {
+            query.addCriteria(Criteria.where("weight").gt(minWeight));
+        }
+        if(maxWeight != null) {
+            query.addCriteria(Criteria.where("weight").lt(maxWeight));
+        }
+        return mongoTemplate.find(query, Pokemon.class);
     }
 }
