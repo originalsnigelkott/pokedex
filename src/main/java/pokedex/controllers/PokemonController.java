@@ -25,8 +25,12 @@ public class PokemonController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Pokemon>> find(@RequestParam(required = false) String name) {
-        var pokemon = pokemonService.getPokemonByName(name);
+    public ResponseEntity<List<Pokemon>> find(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Integer minWeight,
+            @RequestParam(required = false) Integer maxWeight
+    ) {
+        var pokemon = pokemonService.getPokemon(name, minWeight, maxWeight);
         return ResponseEntity.ok(pokemon);
     }
 
