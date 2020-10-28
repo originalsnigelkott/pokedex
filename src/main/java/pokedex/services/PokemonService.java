@@ -29,7 +29,7 @@ public class PokemonService {
         if (name != null) {
             var pokemon = pokemonRepository.findByName(name);
             var potentialPokemon = getAllPokemonNameMatches(name);
-            if (pokemon.size() < potentialPokemon.size() || pokemon.size() == 0) {
+            if (pokemon.size() < potentialPokemon.size() || pokemon.isEmpty()) {
                 pokemon.addAll(getMissingPokemon(pokemon, potentialPokemon));
             }
             return pokemon;
