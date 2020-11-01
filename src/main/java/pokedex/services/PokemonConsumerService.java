@@ -36,5 +36,4 @@ public class PokemonConsumerService {
         var pokemonDto = restTemplate.getForObject(url, PokemonDto.class);
         return new Pokemon(pokemonDto);
     }
-
 }

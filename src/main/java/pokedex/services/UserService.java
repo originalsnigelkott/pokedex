@@ -18,6 +18,10 @@ public class UserService {
         return user;
     }
 
+    public User create(User user) {
+        return userRepository.save(user);
+    }
+
     public List<User> findAll() {
         return userRepository.findAll();
     }
@@ -26,7 +30,15 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("user", "id"));
     }
 
-    public User create(User user) {
-        return userRepository.save(user);
+    public void update(String id, User user) {
+        checkExistenceById(id);
+        user.setId(id);
+        userRepository.save(user);
+    }
+
+    private void checkExistenceById(String id) {
+        if(!userRepository.existsById(id)) {
+            throw new EntityNotFoundException("user", "id");
+        }
     }
 }
