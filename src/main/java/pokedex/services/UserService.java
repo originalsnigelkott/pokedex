@@ -36,6 +36,11 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void delete(String id) {
+        checkExistenceById(id);
+        userRepository.deleteById(id);
+    }
+
     private void checkExistenceById(String id) {
         if(!userRepository.existsById(id)) {
             throw new EntityNotFoundException("user", "id");
