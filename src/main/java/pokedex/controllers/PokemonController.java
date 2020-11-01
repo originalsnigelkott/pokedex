@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/pokemon")
 public class PokemonController {
-    private final String ENDPOINT_NAME = "/api/v1/pokemon";
+    private final String ENDPOINT_NAME = "/api/v1/pokemon/";
 
     @Autowired
     private PokemonService pokemonService;
