@@ -1,8 +1,11 @@
 package pokedex.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import pokedex.entities.User;
 import pokedex.exceptions.EntityNotFoundException;
 import pokedex.repositories.UserRepository;
@@ -37,6 +40,7 @@ public class UserService {
 
     public void update(String id, User user) {
         checkExistenceById(id);
+        checkUserPermission(id);
         user.setId(id);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
@@ -48,8 +52,24 @@ public class UserService {
     }
 
     private void checkExistenceById(String id) {
-        if(!userRepository.existsById(id)) {
+        if (!userRepository.existsById(id)) {
             throw new EntityNotFoundException("user", "id");
         }
+    }
+
+    private void checkUserPermission(String id) {
+        var currentUser = userRepository.findByUsername(getCurrentUser()).get();
+        if (!userIsAdmin(currentUser.getId()) && !currentUser.getId().equals(id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User lacks permission to update the user with this id.");
+        }
+    }
+
+    private String getCurrentUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    private Boolean userIsAdmin(String id) {
+        var user = userRepository.findById(id).get();
+        return user.getRoles().contains("ADMIN");
     }
 }
