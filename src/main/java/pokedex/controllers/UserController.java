@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pokedex.entities.User;
 import pokedex.services.UserService;
@@ -21,7 +22,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user) {
+    public ResponseEntity<User> create(@Validated @RequestBody User user) {
         var createdUser = userService.create(user);
         var uri = URI.create(ENDPOINT_NAME + createdUser.getId());
         return ResponseEntity.created(uri).body(createdUser);
