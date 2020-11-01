@@ -3,15 +3,21 @@ package pokedex.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
+import javax.validation.constraints.NotBlank;
+import java.util.Arrays;
 import java.util.List;
 
 public class User {
     @Id
     private String id;
+    @Indexed(unique = true)
+    @NotBlank(message = "Username must be present and must contain at least one character.")
     private String username;
+    @NotBlank(message = "Password must be present and must contain at least one character.")
     private String password;
-    private List<String> roles;
+    private List<String> roles = Arrays.asList("MEMBER");
 
     public User() {
     }
