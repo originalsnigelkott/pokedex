@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import pokedex.entities.Pokemon;
 import pokedex.services.PokemonService;
@@ -20,6 +21,7 @@ public class PokemonController {
     private PokemonService pokemonService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Pokemon> create(@RequestBody Pokemon pokemon) {
         var createdPokemon = pokemonService.create(pokemon);
         var uri = URI.create(ENDPOINT_NAME + createdPokemon.getId());
@@ -42,12 +44,14 @@ public class PokemonController {
     }
 
     @PutMapping("/{id}")
+    @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable String id, @RequestBody Pokemon pokemon) {
         pokemonService.update(id, pokemon);
     }
 
     @DeleteMapping("/{id}")
+    @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String id) {
         pokemonService.delete(id);
