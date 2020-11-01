@@ -14,13 +14,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/pokemon")
 public class PokemonController {
+    private final String ENDPOINT_NAME = "/api/v1/pokemon";
+
     @Autowired
     private PokemonService pokemonService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Pokemon> create(@RequestBody Pokemon pokemon) {
         var createdPokemon = pokemonService.create(pokemon);
-        var uri = URI.create("/api/v1/pokemon" + createdPokemon.getId());
+        var uri = URI.create(ENDPOINT_NAME + createdPokemon.getId());
         return ResponseEntity.created(uri).body(createdPokemon);
     }
 
