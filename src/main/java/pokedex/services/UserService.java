@@ -6,6 +6,8 @@ import pokedex.entities.User;
 import pokedex.exceptions.EntityNotFoundException;
 import pokedex.repositories.UserRepository;
 
+import java.util.List;
+
 @Service
 public class UserService {
     @Autowired
@@ -14,5 +16,9 @@ public class UserService {
     public User findByUsername(String username) {
         var user = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("user", "username"));
         return user;
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 }
