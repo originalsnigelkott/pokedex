@@ -32,11 +32,11 @@ public class PokemonService {
     }
 
     public List<Pokemon> getPokemon(String name, Integer minWeight, Integer maxWeight) {
-        if (name != null ) {
+        if (name != null) {
             var pokemon = pokemonRepository.findByName(name);
             var potentialPokemon = getAllPokemonNameMatches(name);
             if (pokemon.size() < potentialPokemon.size() || pokemon.isEmpty()) {
-               getMissingPokemon(pokemon, potentialPokemon);
+                getMissingPokemon(pokemon, potentialPokemon);
             }
         }
         if (name != null || minWeight != null || maxWeight != null) {
@@ -95,16 +95,23 @@ public class PokemonService {
 
     private List<Pokemon> getPokemonByProperties(String name, Integer minWeight, Integer maxWeight) {
         var query = new Query();
-        if(name != null && !name.isEmpty()) {
+        if (name != null && !name.isEmpty()) {
             var pattern = Pattern.compile(name, Pattern.CASE_INSENSITIVE);
             query.addCriteria(Criteria.where("name").regex(pattern));
         }
-        if(minWeight != null) {
-            query.addCriteria(Criteria.where("weight").gt(minWeight));
-        }
-        if(maxWeight != null) {
-            query.addCriteria(Criteria.where("weight").lt(maxWeight));
+        if (minWeight != null || maxWeight != null) {
+            query.addCriteria(getSizeComparisonCriteria("weight", minWeight, maxWeight));
         }
         return mongoTemplate.find(query, Pokemon.class);
+    }
+
+    private Criteria getSizeComparisonCriteria(String fieldName, Integer minValue, Integer maxValue) {
+        if(minValue != null && maxValue != null) {
+            return Criteria.where(fieldName).gte(minValue).lte(maxValue);
+        } else if (minValue != null) {
+            return Criteria.where(fieldName).gte(minValue);
+        } else {
+            return Criteria.where(fieldName).lte(maxValue);
+        }
     }
 }
