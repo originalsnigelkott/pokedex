@@ -59,7 +59,7 @@ public class UserService {
 
     private void checkUserPermission(String id) {
         var currentUser = userRepository.findByUsername(getCurrentUser()).get();
-        if (!userIsAdmin(currentUser.getId()) && !currentUser.getId().equals(id)) {
+        if (!userIsAdmin(currentUser) && !currentUser.getId().equals(id)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User lacks permission to update the user with this id.");
         }
     }
@@ -68,8 +68,7 @@ public class UserService {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    private Boolean userIsAdmin(String id) {
-        var user = userRepository.findById(id).get();
+    private Boolean userIsAdmin(User user) {
         return user.getRoles().contains("ADMIN");
     }
 }
