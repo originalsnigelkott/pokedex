@@ -2,8 +2,10 @@ package pokedex.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import pokedex.dtos.PokemonDto;
 import pokedex.entities.Pokemon;
 import pokedex.repositories.PokeApiResourceRepository;
@@ -33,7 +35,11 @@ public class PokemonConsumerService {
 
     private Pokemon getOnePokemonByName(String name) {
         var url = baseUrl + name;
-        var pokemonDto = restTemplate.getForObject(url, PokemonDto.class);
-        return new Pokemon(pokemonDto);
+        try {
+            var pokemonDto = restTemplate.getForObject(url, PokemonDto.class);
+            return new Pokemon(pokemonDto);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "PokeApi is did not respond.");
+        }
     }
 }
