@@ -64,7 +64,9 @@ public class PokemonController {
                     content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = Pokemon.class)))}),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters.",
-                    content = @Content)})
+                    content = @Content),
+            @ApiResponse(responseCode = "503", description = "Third party service is not available.")
+    })
     @GetMapping
     public ResponseEntity<List<Pokemon>> find(
             @RequestParam(required = false) String name,
