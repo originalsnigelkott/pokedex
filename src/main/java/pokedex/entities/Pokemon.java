@@ -4,13 +4,20 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import pokedex.dtos.PokemonDto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+
 public class Pokemon {
     @Id
     private String id;
     @Indexed(unique = true)
+    @Min(1)
     private int number;
+    @NotBlank(message = "Name must be present.")
     private String name;
+    @Min(1)
     private int height;
+    @Min(1)
     private int weight;
 
     public Pokemon() {
