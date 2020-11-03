@@ -64,7 +64,7 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
                     content = @Content),
-            @ApiResponse(responseCode = "404", description = "User no user found.",
+            @ApiResponse(responseCode = "404", description = "No user found.",
                     content = @Content)})
     @GetMapping("/{id}")
     @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
@@ -74,30 +74,32 @@ public class UserController {
 
     @Operation(summary = "Updates user by id.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Updated user.",
+            @ApiResponse(responseCode = "204", description = "Updated user.",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid request body.",
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "Request lacks authentication.",
                     content = @Content),
             @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
                     content = @Content),
-            @ApiResponse(responseCode = "404", description = "User no user found.",
+            @ApiResponse(responseCode = "404", description = "No user found.",
                     content = @Content)})
     @PutMapping("/{id}")
     @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable String id, @RequestBody User user) {
+    public void update(@PathVariable String id, @Validated @RequestBody User user) {
         userService.update(id, user);
     }
 
     @Operation(summary = "Deletes a user by id.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Deletes user.",
+            @ApiResponse(responseCode = "204", description = "Deletes user.",
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "Request lacks authentication.",
                     content = @Content),
             @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
                     content = @Content),
-            @ApiResponse(responseCode = "404", description = "User no user found.",
+            @ApiResponse(responseCode = "404", description = "No user found.",
                     content = @Content)})
     @DeleteMapping("/{id}")
     @Secured("ROLE_ADMIN")

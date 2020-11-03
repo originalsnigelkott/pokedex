@@ -81,8 +81,10 @@ public class PokemonController {
 
     @Operation(summary = "Updates pokemon by id.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Updated the pokemon.",
+            @ApiResponse(responseCode = "204", description = "Updated the pokemon.",
                     content = {@Content}),
+            @ApiResponse(responseCode = "400", description = "Invalid request body.",
+                    content = @Content),
             @ApiResponse(responseCode = "401", description = "Request lacks authentication.",
                     content = @Content),
             @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
@@ -92,13 +94,13 @@ public class PokemonController {
     @PutMapping("/{id}")
     @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable String id, @RequestBody Pokemon pokemon) {
+    public void update(@PathVariable String id, @Validated @RequestBody Pokemon pokemon) {
         pokemonService.update(id, pokemon);
     }
 
     @Operation(summary = "Deletes pokemon by id.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Deleted the pokemon.",
+            @ApiResponse(responseCode = "204", description = "Deleted the pokemon.",
                     content = {@Content}),
             @ApiResponse(responseCode = "401", description = "Request lacks authentication.",
                     content = @Content),
