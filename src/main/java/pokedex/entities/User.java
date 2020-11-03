@@ -14,7 +14,7 @@ public class User {
     @Id
     private String id;
     @Indexed(unique = true)
-    @NotBlank(message = "Username must be present and must contain at least one character.")
+    @NotBlank(message = "Username must be present.")
     @Size(min = 3, max = 32, message = "Username must be at least 3 characters and no more than 32 characters.")
     private String username;
     @Size(min = 8, message = "Password must be at least 8 characters")
