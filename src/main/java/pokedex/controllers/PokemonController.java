@@ -57,9 +57,11 @@ public class PokemonController {
     public ResponseEntity<List<Pokemon>> find(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer minWeight,
-            @RequestParam(required = false) Integer maxWeight
+            @RequestParam(required = false) Integer maxWeight,
+            @RequestParam(required = false) Integer minHeight,
+            @RequestParam(required = false) Integer maxHeight
     ) {
-        var pokemon = pokemonService.getPokemon(name, minWeight, maxWeight);
+        var pokemon = pokemonService.getPokemon(name, minWeight, maxWeight, minHeight, maxHeight);
         return ResponseEntity.ok(pokemon);
     }
 

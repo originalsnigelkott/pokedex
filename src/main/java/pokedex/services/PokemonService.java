@@ -31,7 +31,7 @@ public class PokemonService {
         return save(pokemon);
     }
 
-    public List<Pokemon> getPokemon(String name, Integer minWeight, Integer maxWeight) {
+    public List<Pokemon> getPokemon(String name, Integer minWeight, Integer maxWeight, Integer minHeight, Integer maxHeight) {
         if (name != null) {
             var pokemon = pokemonRepository.findByName(name);
             var potentialPokemon = getAllPokemonNameMatches(name);
@@ -39,8 +39,8 @@ public class PokemonService {
                 getMissingPokemon(pokemon, potentialPokemon);
             }
         }
-        if (name != null || minWeight != null || maxWeight != null) {
-            return getPokemonByProperties(name, minWeight, maxWeight);
+        if (name != null || minWeight != null || maxWeight != null || minHeight != null || maxHeight != null) {
+            return getPokemonByProperties(name, minWeight, maxWeight, minHeight, maxHeight);
         }
         return pokemonRepository.findAllByOrderByNumberAsc();
     }
@@ -93,7 +93,7 @@ public class PokemonService {
         return pokemonRepository.saveAll(pokemonConsumerService.getManyPokemonByName(pokemonToFetch));
     }
 
-    private List<Pokemon> getPokemonByProperties(String name, Integer minWeight, Integer maxWeight) {
+    private List<Pokemon> getPokemonByProperties(String name, Integer minWeight, Integer maxWeight, Integer minHeight, Integer maxHeight) {
         var query = new Query();
         if (name != null && !name.isEmpty()) {
             var pattern = Pattern.compile(name, Pattern.CASE_INSENSITIVE);
@@ -101,6 +101,9 @@ public class PokemonService {
         }
         if (minWeight != null || maxWeight != null) {
             query.addCriteria(getSizeComparisonCriteria("weight", minWeight, maxWeight));
+        }
+        if (minHeight != null || maxHeight != null) {
+           query.addCriteria(getSizeComparisonCriteria("height", minHeight, maxHeight));
         }
         return mongoTemplate.find(query, Pokemon.class);
     }
