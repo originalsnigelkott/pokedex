@@ -36,7 +36,7 @@ public class PokemonController {
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "Request has no authentication.",
                     content = @Content),
-            @ApiResponse(responseCode = "403", description = "User have too low permission to complete request.",
+            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
                     content = @Content)})
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Secured("ROLE_ADMIN")
@@ -44,6 +44,18 @@ public class PokemonController {
         var createdPokemon = pokemonService.create(pokemon);
         var uri = URI.create(ENDPOINT_NAME + createdPokemon.getId());
         return ResponseEntity.created(uri).body(createdPokemon);
+    }
+
+    @Operation(summary = "Find pokemon by id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found matching pokemon.",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Pokemon.class))}),
+            @ApiResponse(responseCode = "404", description = "Did not find any pokemon.",
+                    content = @Content)})
+    @GetMapping("/{id}")
+    public ResponseEntity<Pokemon> findById(@PathVariable String id) {
+        return ResponseEntity.ok(pokemonService.getPokemonById(id));
     }
 
     @Operation(summary = "Finds pokemon matching the request.")
@@ -65,25 +77,13 @@ public class PokemonController {
         return ResponseEntity.ok(pokemon);
     }
 
-    @Operation(summary = "Find pokemon by id.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found matching pokemon.",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Pokemon.class))}),
-            @ApiResponse(responseCode = "404", description = "Did not find any pokemon.",
-                    content = @Content)})
-    @GetMapping("/{id}")
-    public ResponseEntity<Pokemon> findById(@PathVariable String id) {
-        return ResponseEntity.ok(pokemonService.getPokemonById(id));
-    }
-
     @Operation(summary = "Updates pokemon by id.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Updated the pokemon.",
                     content = {@Content}),
             @ApiResponse(responseCode = "401", description = "Request has no authentication.",
                     content = @Content),
-            @ApiResponse(responseCode = "403", description = "User have too low permission to complete request.",
+            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Did not find any pokemon.",
                     content = @Content)})
@@ -100,7 +100,7 @@ public class PokemonController {
                     content = {@Content}),
             @ApiResponse(responseCode = "401", description = "Request has no authentication.",
                     content = @Content),
-            @ApiResponse(responseCode = "403", description = "User have too low permission to complete request.",
+            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Did not find any pokemon.",
                     content = @Content)})
