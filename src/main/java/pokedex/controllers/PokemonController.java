@@ -34,7 +34,7 @@ public class PokemonController {
                             schema = @Schema(implementation = Pokemon.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid request body.",
                     content = @Content),
-            @ApiResponse(responseCode = "401", description = "Request has no authentication.",
+            @ApiResponse(responseCode = "401", description = "Request lacks authentication.",
                     content = @Content),
             @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
                     content = @Content)})
@@ -83,7 +83,7 @@ public class PokemonController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Updated the pokemon.",
                     content = {@Content}),
-            @ApiResponse(responseCode = "401", description = "Request has no authentication.",
+            @ApiResponse(responseCode = "401", description = "Request lacks authentication.",
                     content = @Content),
             @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
                     content = @Content),
@@ -100,7 +100,7 @@ public class PokemonController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Deleted the pokemon.",
                     content = {@Content}),
-            @ApiResponse(responseCode = "401", description = "Request has no authentication.",
+            @ApiResponse(responseCode = "401", description = "Request lacks authentication.",
                     content = @Content),
             @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
                     content = @Content),
