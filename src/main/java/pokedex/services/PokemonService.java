@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class PokemonService {
     @Autowired
-    private PokemonConsumerService pokemonConsumerService;
+    private PokeApiConsumerService pokeApiConsumerService;
     @Autowired
     private PokemonRepository pokemonRepository;
     @Autowired
@@ -90,7 +90,7 @@ public class PokemonService {
                 pokemonToFetch.add(name);
             }
         });
-        return pokemonRepository.saveAll(pokemonConsumerService.getManyPokemonByName(pokemonToFetch));
+        return pokemonRepository.saveAll(pokeApiConsumerService.getManyPokemonByName(pokemonToFetch));
     }
 
     private List<Pokemon> getPokemonByProperties(String name, Integer minWeight, Integer maxWeight, Integer minHeight, Integer maxHeight) {
