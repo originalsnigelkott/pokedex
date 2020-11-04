@@ -109,4 +109,12 @@ public class Pokemon {
     public void setMoves(List<String> moves) {
         this.moves = moves;
     }
+
+    public List<String> getAbilities() {
+        return abilities;
+    }
+
+    public void setAbilities(List<String> abilities) {
+        this.abilities = abilities;
+    }
 }
