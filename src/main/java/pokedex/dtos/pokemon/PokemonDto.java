@@ -9,17 +9,19 @@ public class PokemonDto {
     private int weight;
     private List<PokemonDtoType> types;
     private List<PokemonDtoMove> moves;
+    private List<PokemonDtoAbility> abilities;
 
     public PokemonDto() {
     }
 
-    public PokemonDto(int id, String name, int height, int weight, List<PokemonDtoType> types, List<PokemonDtoMove> moves) {
+    public PokemonDto(int id, String name, int height, int weight, List<PokemonDtoType> types, List<PokemonDtoMove> moves, List<PokemonDtoAbility> abilities) {
         this.id = id;
         this.name = name;
         this.height = height;
         this.weight = weight;
         this.types = types;
         this.moves = moves;
+        this.abilities = abilities;
     }
 
     public int getId() {
@@ -68,5 +70,13 @@ public class PokemonDto {
 
     public void setMoves(List<PokemonDtoMove> moves) {
         this.moves = moves;
+    }
+
+    public List<PokemonDtoAbility> getAbilities() {
+        return abilities;
+    }
+
+    public void setAbilities(List<PokemonDtoAbility> abilities) {
+        this.abilities = abilities;
     }
 }
