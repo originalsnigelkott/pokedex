@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
-import pokedex.dtos.PokemonDto;
+import pokedex.dtos.pokemon.PokemonDto;
 import pokedex.entities.Pokemon;
 import pokedex.repositories.PokeApiResourceRepository;
 
@@ -39,7 +39,7 @@ public class PokemonConsumerService {
             var pokemonDto = restTemplate.getForObject(url, PokemonDto.class);
             return new Pokemon(pokemonDto);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "PokeApi is did not respond.");
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Failed to fetch pokemon.");
         }
     }
 }
