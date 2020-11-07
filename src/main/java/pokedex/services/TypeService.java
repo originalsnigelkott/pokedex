@@ -28,9 +28,9 @@ public class TypeService {
     }
 
     private Type findByName(String name) {
-        var type = typeRepository.findByName(name).get();
-        if(type != null) {
-            return type;
+        var type = typeRepository.findByName(name);
+        if(type.isPresent()) {
+            return type.get();
         }
         return pokeApiConsumerService.getTypeByName(name);
     }
