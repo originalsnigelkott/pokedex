@@ -23,4 +23,28 @@ public class Type {
         this.name = typeDto.getName();
         this.pokemon = typeDto.getPokemon();
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<String> getPokemon() {
+        return pokemon;
+    }
+
+    public void setPokemon(List<String> pokemon) {
+        this.pokemon = pokemon;
+    }
 }
