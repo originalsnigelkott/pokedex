@@ -32,6 +32,6 @@ public class TypeService {
         if(type.isPresent()) {
             return type.get();
         }
-        return pokeApiConsumerService.getTypeByName(name);
+        return typeRepository.save(pokeApiConsumerService.getTypeByName(name));
     }
 }
