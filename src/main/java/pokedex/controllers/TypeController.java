@@ -9,18 +9,20 @@ import org.springframework.web.bind.annotation.RestController;
 import pokedex.entities.Type;
 import pokedex.services.TypeService;
 
+import java.util.List;
+
 @RestController
 public class TypeController {
-//    @Autowired
-//    private TypeService typeService;
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Type> findById(@PathVariable String id) {
-//        return ResponseEntity.ok(typeService.findById(id));
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<Type> findAll(@RequestParam(required = false) String name) {
-//        return ResponseEntity.ok(typeService.find(name));
-//    }
+    @Autowired
+    private TypeService typeService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Type> findById(@PathVariable String id) {
+        return ResponseEntity.ok(typeService.findById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Type>> findAll(@RequestParam String name) {
+        return ResponseEntity.ok(typeService.find(name));
+    }
 }
