@@ -3,25 +3,23 @@ package pokedex.entities;
 import org.springframework.data.annotation.Id;
 import pokedex.dtos.move.MoveDto;
 
-import java.util.List;
-
 public class Move {
     @Id
     private String id;
     private String name;
-    private List<String> pokemon;
+    private int power;
 
     public Move() {
     }
 
-    public Move(String name, List<String> pokemon) {
+    public Move(String name, int power) {
         this.name = name;
-        this.pokemon = pokemon;
+        this.power = power;
     }
 
     public Move(MoveDto moveDto) {
         this.name = moveDto.getName();
-        this.pokemon = moveDto.getPokemon();
+        this.power = moveDto.getPower();
     }
 
     public String getId() {
@@ -40,11 +38,11 @@ public class Move {
         this.name = name;
     }
 
-    public List<String> getPokemon() {
-        return pokemon;
+    public int getPower() {
+        return power;
     }
 
-    public void setPokemon(List<String> pokemon) {
-        this.pokemon = pokemon;
+    public void setPower(int power) {
+        this.power = power;
     }
 }
