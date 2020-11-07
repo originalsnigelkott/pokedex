@@ -9,9 +9,11 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import pokedex.dtos.ability.AbilityDto;
+import pokedex.dtos.move.MoveDto;
 import pokedex.dtos.pokemon.PokemonDto;
 import pokedex.dtos.type.TypeDto;
 import pokedex.entities.Ability;
+import pokedex.entities.Move;
 import pokedex.entities.Pokemon;
 import pokedex.entities.Type;
 import pokedex.exceptions.EntityNotFoundException;
@@ -25,6 +27,7 @@ import java.util.List;
 public class PokeApiConsumerService {
     private final String typeEntity = "type";
     private final String abilityEntity = "ability";
+    private final String moveEntity = "move";
 
     @Autowired
     private PokeApiResourceRepository pokeApiResourceRepository;
@@ -57,11 +60,15 @@ public class PokeApiConsumerService {
     }
 
     public Type getTypeByName(String name) {
-        return (Type)getEntityByName(name, typeEntity, TypeDto.class);
+        return (Type) getEntityByName(name, typeEntity, TypeDto.class);
     }
 
     public Ability getAbilityByName(String name) {
-        return (Ability)getEntityByName(name, abilityEntity, AbilityDto.class);
+        return (Ability) getEntityByName(name, abilityEntity, AbilityDto.class);
+    }
+
+    public Move getMoveByName(String name) {
+        return (Move) getEntityByName(name, moveEntity, MoveDto.class);
     }
 
     private Object getEntityByName(String name, String entity, Class dtoClass) {
@@ -72,7 +79,7 @@ public class PokeApiConsumerService {
         } catch (HttpServerErrorException e) {
             throw new PokeApiException();
         } catch (HttpClientErrorException e) {
-            if(e.getStatusCode() == HttpStatus.NOT_FOUND) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new EntityNotFoundException(entity, "name");
             }
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error.");
@@ -85,10 +92,13 @@ public class PokeApiConsumerService {
     private Object getNewEntity(String entity, Object dto) {
         switch (entity) {
             case typeEntity: {
-                return new Type((TypeDto)dto);
+                return new Type((TypeDto) dto);
             }
             case abilityEntity: {
-                return new Ability((AbilityDto)dto);
+                return new Ability((AbilityDto) dto);
+            }
+            case moveEntity: {
+                return new Move((MoveDto) dto);
             }
             default: {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error.");
