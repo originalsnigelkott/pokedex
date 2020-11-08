@@ -18,8 +18,9 @@ import pokedex.entities.Pokemon;
 import pokedex.entities.Type;
 import pokedex.exceptions.EntityNotFoundException;
 import pokedex.exceptions.PokeApiException;
-import pokedex.repositories.PokeApiResourceRepository;
+import pokedex.repositories.PokemonRepository;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class PokeApiConsumerService {
     private final String moveEntity = "move";
 
     @Autowired
-    private PokeApiResourceRepository pokeApiResourceRepository;
+    private PokemonRepository pokemonRepository;
 
     private String baseUrl = "https://pokeapi.co/api/v2/";
     private final RestTemplate restTemplate;
@@ -51,12 +52,14 @@ public class PokeApiConsumerService {
         var url = baseUrl + "pokemon/" + name;
         try {
             var pokemonDto = restTemplate.getForObject(url, PokemonDto.class);
-            return new Pokemon(pokemonDto);
-        } catch (HttpServerErrorException e) {
-            throw new PokeApiException();
+            return pokemonRepository.save(new Pokemon(pokemonDto));
         } catch (Exception e) {
+            if (e.getCause() instanceof ConnectException) {
+                throw new PokeApiException();
+            }
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error.");
         }
+
     }
 
     public Type getTypeByName(String name) {
