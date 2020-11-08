@@ -1,6 +1,7 @@
 package pokedex.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,7 +37,7 @@ public class PokemonController {
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "Request lacks authentication.",
                     content = @Content),
-            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
+            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request. Admin role required.",
                     content = @Content)})
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Secured("ROLE_ADMIN")
@@ -58,25 +59,26 @@ public class PokemonController {
         return ResponseEntity.ok(pokemonService.getPokemonById(id));
     }
 
-    @Operation(summary = "Finds pokemon matching the request.")
+    @Operation(summary = "Finds pokemon matching the request.", description = "If name is not given only matches in this apps database. If name is given checks for matches on PokeApi as well.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found matching pokemon.",
                     content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = Pokemon.class)))}),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters.",
                     content = @Content),
-            @ApiResponse(responseCode = "503", description = "Third party service is not available.")
+            @ApiResponse(responseCode = "503", description = "Third party service is not available. Usually because of PokeApi timeout, try again as many times as needed.")
     })
     @GetMapping
     public ResponseEntity<List<Pokemon>> find(
-            @RequestParam(required = false) String name,
+            @Parameter(description = "Name can be partial but must be 3 characters or longer.") @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer minWeight,
             @RequestParam(required = false) Integer maxWeight,
             @RequestParam(required = false) Integer minHeight,
             @RequestParam(required = false) Integer maxHeight,
-            @RequestParam(required = false) Integer page
+            @Parameter(description = "Only returns exact matches, multiple types can be entered separated by ','.") @RequestParam(required = false) String type,
+            @Parameter(description = "If page is not given, the first page (page 0) is return.") @RequestParam(required = false) Integer page
     ) {
-        var pokemon = pokemonService.getPokemon(name, minWeight, maxWeight, minHeight, maxHeight, page);
+        var pokemon = pokemonService.getPokemon(name, minWeight, maxWeight, minHeight, maxHeight, type, page);
         return ResponseEntity.ok(pokemon);
     }
 
@@ -88,7 +90,7 @@ public class PokemonController {
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "Request lacks authentication.",
                     content = @Content),
-            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
+            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request. Admin role required.",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Did not find any pokemon.",
                     content = @Content)})
@@ -105,7 +107,7 @@ public class PokemonController {
                     content = {@Content}),
             @ApiResponse(responseCode = "401", description = "Request lacks authentication.",
                     content = @Content),
-            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
+            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request. Admin role required.",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Did not find any pokemon.",
                     content = @Content)})

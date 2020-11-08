@@ -35,7 +35,7 @@ public class PokemonService {
         return save(pokemon);
     }
 
-    public List<Pokemon> getPokemon(String name, Integer minWeight, Integer maxWeight, Integer minHeight, Integer maxHeight, Integer page) {
+    public List<Pokemon> getPokemon(String name, Integer minWeight, Integer maxWeight, Integer minHeight, Integer maxHeight, String type, Integer page) {
         if (page == null) {
             page = 0;
         }
@@ -45,8 +45,8 @@ public class PokemonService {
             }
             checkForMissingPokemon(name);
         }
-        if (name != null || minWeight != null || maxWeight != null || minHeight != null || maxHeight != null) {
-            return getPokemonByProperties(name, minWeight, maxWeight, minHeight, maxHeight, page);
+        if (name != null || minWeight != null || maxWeight != null || minHeight != null || maxHeight != null || type != null) {
+            return getPokemonByProperties(name, minWeight, maxWeight, minHeight, maxHeight, type, page);
         }
         return pokemonRepository.findAllByOrderByNumberAsc().stream().skip(page * PAGE_SIZE).limit(PAGE_SIZE).collect(Collectors.toList());
     }
@@ -107,7 +107,7 @@ public class PokemonService {
         return pokeApiConsumerService.getManyPokemonByName(pokemonToFetch);
     }
 
-    private List<Pokemon> getPokemonByProperties(String name, Integer minWeight, Integer maxWeight, Integer minHeight, Integer maxHeight, Integer page) {
+    private List<Pokemon> getPokemonByProperties(String name, Integer minWeight, Integer maxWeight, Integer minHeight, Integer maxHeight, String type, Integer page) {
         var query = new Query();
         if (name != null && !name.isEmpty()) {
             var pattern = Pattern.compile(name, Pattern.CASE_INSENSITIVE);
@@ -118,6 +118,9 @@ public class PokemonService {
         }
         if (minHeight != null || maxHeight != null) {
             query.addCriteria(getSizeComparisonCriteria("height", minHeight, maxHeight));
+        }
+        if (type != null) {
+            query.addCriteria(Criteria.where("types").all(List.of(type.split(","))));
         }
         query.limit(PAGE_SIZE).skip(page * PAGE_SIZE);
         return mongoTemplate.find(query, Pokemon.class);
