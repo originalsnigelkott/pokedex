@@ -7,6 +7,9 @@ import pokedex.exceptions.EntityNotFoundException;
 import pokedex.repositories.MoveRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static pokedex.core.Constants.PAGE_SIZE;
 
 @Service
 public class MoveService {
@@ -20,11 +23,17 @@ public class MoveService {
         return moveRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("move", "id"));
     }
 
-    public List<Move> find(String name) {
+    public List<Move> find(String name, Integer page) {
+        if (page == null) {
+            page = 0;
+        }
         if (name != null) {
             return List.of(findByName(name));
         }
-        return moveRepository.findAll();
+        return moveRepository.findAll().stream()
+                .skip(PAGE_SIZE * page)
+                .limit(PAGE_SIZE)
+                .collect(Collectors.toList());
     }
 
     private Move findByName(String name) {

@@ -44,7 +44,7 @@ public class AbilityController {
             @ApiResponse(responseCode = "503", description = "Third party service is not available.")
     })
     @GetMapping
-    public ResponseEntity<List<Ability>> findAll(@RequestParam(required = false) String name) {
-        return ResponseEntity.ok(abilityService.find(name));
+    public ResponseEntity<List<Ability>> findAll(@RequestParam(required = false) String name, @RequestParam(required = false) Integer page) {
+        return ResponseEntity.ok(abilityService.find(name, page));
     }
 }

@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pokedex.entities.Ability;
 import pokedex.entities.Move;
 import pokedex.services.MoveService;
 
@@ -45,7 +44,7 @@ public class MoveController {
             @ApiResponse(responseCode = "503", description = "Third party service is not available.")
     })
     @GetMapping
-    public ResponseEntity<List<Move>> findAll(@RequestParam(required = false) String name) {
-        return ResponseEntity.ok(moveService.find(name));
+    public ResponseEntity<List<Move>> findAll(@RequestParam(required = false) String name, @RequestParam(required = false) Integer page) {
+        return ResponseEntity.ok(moveService.find(name, page));
     }
 }

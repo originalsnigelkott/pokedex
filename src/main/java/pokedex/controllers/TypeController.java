@@ -44,7 +44,7 @@ public class TypeController {
             @ApiResponse(responseCode = "503", description = "Third party service is not available.")
     })
     @GetMapping
-    public ResponseEntity<List<Type>> findAll(@RequestParam(required = false) String name) {
-        return ResponseEntity.ok(typeService.find(name));
+    public ResponseEntity<List<Type>> findAll(@RequestParam(required = false) String name, @RequestParam(required = false) Integer page) {
+        return ResponseEntity.ok(typeService.find(name, page));
     }
 }
