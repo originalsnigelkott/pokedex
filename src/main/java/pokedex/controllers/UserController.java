@@ -47,7 +47,7 @@ public class UserController {
                             array = @ArraySchema(schema = @Schema(implementation = User.class)))}),
             @ApiResponse(responseCode = "401", description = "Request lacks authentication.",
                     content = @Content),
-            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
+            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request. Admin role required.",
                     content = @Content)})
     @GetMapping
     @Secured("ROLE_ADMIN")
@@ -62,7 +62,7 @@ public class UserController {
                             array = @ArraySchema(schema = @Schema(implementation = User.class)))}),
             @ApiResponse(responseCode = "401", description = "Request lacks authentication.",
                     content = @Content),
-            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
+            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request. Admin or member role required.",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "No user found.",
                     content = @Content)})
@@ -80,7 +80,7 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "Request lacks authentication.",
                     content = @Content),
-            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
+            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request. Admin or member role required. Member role can only change themselves",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "No user found.",
                     content = @Content)})
@@ -97,7 +97,7 @@ public class UserController {
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "Request lacks authentication.",
                     content = @Content),
-            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request.",
+            @ApiResponse(responseCode = "403", description = "User lacks permission to complete request. Admin role required.",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "No user found.",
                     content = @Content)})

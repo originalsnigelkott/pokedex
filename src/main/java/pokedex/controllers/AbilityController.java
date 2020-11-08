@@ -1,6 +1,7 @@
 package pokedex.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,12 +40,15 @@ public class AbilityController {
                             array = @ArraySchema(schema = @Schema(implementation = Ability.class)))}),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters.",
                     content = @Content),
-            @ApiResponse(responseCode = "404", description = "Did not find any ability matching name. A full match with name is required",
+            @ApiResponse(responseCode = "404", description = "Did not find any ability matching name.",
                     content = @Content),
             @ApiResponse(responseCode = "503", description = "Third party service is not available.")
     })
     @GetMapping
-    public ResponseEntity<List<Ability>> findAll(@RequestParam(required = false) String name, @RequestParam(required = false) Integer page) {
+    public ResponseEntity<List<Ability>> findAll(
+            @Parameter(description = "A full match with name is required.") @RequestParam(required = false) String name,
+            @Parameter(description = "If page is not given, the first page (page 0) is return.") @RequestParam(required = false) Integer page
+    ) {
         return ResponseEntity.ok(abilityService.find(name, page));
     }
 }

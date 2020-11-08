@@ -1,6 +1,7 @@
 package pokedex.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,7 +45,10 @@ public class MoveController {
             @ApiResponse(responseCode = "503", description = "Third party service is not available.")
     })
     @GetMapping
-    public ResponseEntity<List<Move>> findAll(@RequestParam(required = false) String name, @RequestParam(required = false) Integer page) {
+    public ResponseEntity<List<Move>> findAll(
+            @Parameter(description = "A full match with name is required.") @RequestParam(required = false) String name,
+            @Parameter(description = "If page is not given, the first page (page 0) is return.") @RequestParam(required = false) Integer page
+    ) {
         return ResponseEntity.ok(moveService.find(name, page));
     }
 }
