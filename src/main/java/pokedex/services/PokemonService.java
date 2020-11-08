@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import pokedex.entities.PokeApiResource;
 import pokedex.entities.Pokemon;
 import pokedex.exceptions.EntityNotFoundException;
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static pokedex.core.Constants.PAGE_SIZE;
 
 @Service
 public class PokemonService {
@@ -31,18 +35,20 @@ public class PokemonService {
         return save(pokemon);
     }
 
-    public List<Pokemon> getPokemon(String name, Integer minWeight, Integer maxWeight, Integer minHeight, Integer maxHeight) {
+    public List<Pokemon> getPokemon(String name, Integer minWeight, Integer maxWeight, Integer minHeight, Integer maxHeight, Integer page) {
+        if (page == null) {
+            page = 0;
+        }
         if (name != null) {
-            var pokemon = pokemonRepository.findByName(name);
-            var potentialPokemon = getAllPokemonNameMatches(name);
-            if (pokemon.size() < potentialPokemon.size() || pokemon.isEmpty()) {
-                getMissingPokemon(pokemon, potentialPokemon);
+            if (name.trim().length() < 3) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name must be at least 3 characters long.");
             }
+            checkForMissingPokemon(name);
         }
         if (name != null || minWeight != null || maxWeight != null || minHeight != null || maxHeight != null) {
-            return getPokemonByProperties(name, minWeight, maxWeight, minHeight, maxHeight);
+            return getPokemonByProperties(name, minWeight, maxWeight, minHeight, maxHeight, page);
         }
-        return pokemonRepository.findAllByOrderByNumberAsc();
+        return pokemonRepository.findAllByOrderByNumberAsc().stream().skip(page * PAGE_SIZE).limit(PAGE_SIZE).collect(Collectors.toList());
     }
 
     public Pokemon getPokemonById(String id) {
@@ -75,6 +81,14 @@ public class PokemonService {
         return resources;
     }
 
+    private void checkForMissingPokemon(String name) {
+        var pokemon = pokemonRepository.findByName(name);
+        var potentialPokemon = getAllPokemonNameMatches(name);
+        if (pokemon.size() < potentialPokemon.size() || pokemon.isEmpty()) {
+            getMissingPokemon(pokemon, potentialPokemon);
+        }
+    }
+
     private List<Pokemon> getMissingPokemon(List<Pokemon> pokemon, List<PokeApiResource> potentialPokemon) {
         List<String> pokemonToFetch = new ArrayList<>();
 
@@ -90,10 +104,10 @@ public class PokemonService {
                 pokemonToFetch.add(name);
             }
         });
-        return pokemonRepository.saveAll(pokeApiConsumerService.getManyPokemonByName(pokemonToFetch));
+        return pokeApiConsumerService.getManyPokemonByName(pokemonToFetch);
     }
 
-    private List<Pokemon> getPokemonByProperties(String name, Integer minWeight, Integer maxWeight, Integer minHeight, Integer maxHeight) {
+    private List<Pokemon> getPokemonByProperties(String name, Integer minWeight, Integer maxWeight, Integer minHeight, Integer maxHeight, Integer page) {
         var query = new Query();
         if (name != null && !name.isEmpty()) {
             var pattern = Pattern.compile(name, Pattern.CASE_INSENSITIVE);
@@ -103,13 +117,14 @@ public class PokemonService {
             query.addCriteria(getSizeComparisonCriteria("weight", minWeight, maxWeight));
         }
         if (minHeight != null || maxHeight != null) {
-           query.addCriteria(getSizeComparisonCriteria("height", minHeight, maxHeight));
+            query.addCriteria(getSizeComparisonCriteria("height", minHeight, maxHeight));
         }
+        query.limit(PAGE_SIZE).skip(page * PAGE_SIZE);
         return mongoTemplate.find(query, Pokemon.class);
     }
 
     private Criteria getSizeComparisonCriteria(String fieldName, Integer minValue, Integer maxValue) {
-        if(minValue != null && maxValue != null) {
+        if (minValue != null && maxValue != null) {
             return Criteria.where(fieldName).gte(minValue).lte(maxValue);
         } else if (minValue != null) {
             return Criteria.where(fieldName).gte(minValue);

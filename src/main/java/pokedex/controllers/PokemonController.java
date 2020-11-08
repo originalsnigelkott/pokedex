@@ -73,9 +73,10 @@ public class PokemonController {
             @RequestParam(required = false) Integer minWeight,
             @RequestParam(required = false) Integer maxWeight,
             @RequestParam(required = false) Integer minHeight,
-            @RequestParam(required = false) Integer maxHeight
+            @RequestParam(required = false) Integer maxHeight,
+            @RequestParam(required = false) Integer page
     ) {
-        var pokemon = pokemonService.getPokemon(name, minWeight, maxWeight, minHeight, maxHeight);
+        var pokemon = pokemonService.getPokemon(name, minWeight, maxWeight, minHeight, maxHeight, page);
         return ResponseEntity.ok(pokemon);
     }
 
